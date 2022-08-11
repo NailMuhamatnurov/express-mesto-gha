@@ -36,25 +36,23 @@ const deleteCard = async (req, res) => {
   }
 };
 
-const likeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка не найдена');
-      }
-      res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err instanceof NotFoundError) {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-      }
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-      }
-      if (err.name === 'ServerError') {
-        res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
-      }
-    });
+const likeCard = async (req, res) => {
+  try {
+    // eslint-disable-next-line max-len
+    const findedLike = await Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true });
+    if (!findedLike) {
+      throw new NotFoundError('Карточка не найдена');
+    }
+    res.status(200).send({ data: findedLike });
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'ValidationError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
+  }
 };
 
 const dislikeCard = async (req, res) => {
