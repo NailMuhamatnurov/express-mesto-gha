@@ -16,22 +16,10 @@ const getCard = (req, res, next) => {
     .catch(next);
 };
 
-const deleteCard = async (req, res) => {
-  try {
-    const findedCard = Card.findByIdAndRemove(req.params.cardId);
-    if (!findedCard) {
-      throw new NotFoundError('Карточка не найдена');
-    }
-    res.send({ data: findedCard });
-  } catch (err) {
-    if (err instanceof NotFoundError) {
-      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
-      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    } else {
-      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
-    }
-  }
+const deleteCard = (req, res, next) => {
+  Card.findByIdAndRemove(req.params.cardId)
+    .then((card) => res.send({ data: card }))
+    .catch(next);
 };
 
 const likeCard = async (req, res) => {
