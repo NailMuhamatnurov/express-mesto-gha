@@ -39,6 +39,7 @@ app.use((err, req, res, next) => {
   if (err.name === 'ServerError') {
     res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не может выполнить запрос' });
   }
+  next();
 });
 
 app.listen(PORT, () => {
