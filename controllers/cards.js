@@ -68,11 +68,9 @@ const dislikeCard = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    }
-    if (err.name === 'ValidationError') {
+    } else if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    }
-    if (err.name === 'ServerError') {
+    } else {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
     }
   }
