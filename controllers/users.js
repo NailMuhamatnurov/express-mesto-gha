@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const NotFoundError = require('../errors/notFoundError');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -13,10 +14,16 @@ const createUser = (req, res, next) => {
     .catch(next);
 };
 
-const getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+const getUserById = async (req, res) => {
+  try {
+    const findedUser = await User.findById(req.params.userId);
+    if (!findedUser) {
+      throw new NotFoundError('Пользователь не найден');
+    }
+    res.send({ data: findedUser });
+  } catch (err) {
+    res.send(`Ошибка ${err.name}`);
+  }
 };
 
 const updateUser = (req, res, next) => {
