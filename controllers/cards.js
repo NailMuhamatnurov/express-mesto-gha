@@ -47,7 +47,7 @@ const likeCard = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
+    } else if (err.name === 'CastError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
     } else {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
@@ -66,7 +66,7 @@ const dislikeCard = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
+    } else if (err.name === 'CastError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
     } else {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
