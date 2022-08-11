@@ -36,7 +36,11 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { name, about } = req.body;
-    const findedUser = await User.findByIdAndUpdate(req.user._id, { name, about }, { new: true });
+    const findedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, about },
+      { new: true, runValidators: true },
+    );
     if (!findedUser) {
       throw new NotFoundError('Пользователь не найден');
     }
@@ -44,9 +48,11 @@ const updateUser = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
+    }
+    if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    } else {
+    }
+    if (err.name === 'ServerError') {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
     }
   }
@@ -55,7 +61,11 @@ const updateUser = async (req, res) => {
 const updateAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
-    const findedAvatar = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true });
+    const findedAvatar = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatar },
+      { new: true, runValidators: true },
+    );
     if (!findedAvatar) {
       throw new NotFoundError('Пользователь не найден');
     }
