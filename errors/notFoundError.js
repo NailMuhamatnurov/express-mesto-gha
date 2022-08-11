@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 const { ERROR_CODE_NOT_FOUND } = require('./errorsStatus');
 
 class NotFoundError extends Error {
@@ -5,6 +6,6 @@ class NotFoundError extends Error {
     super(message);
     this.statusCode = ERROR_CODE_NOT_FOUND;
   }
-};
+}
 
 module.exports = NotFoundError;
