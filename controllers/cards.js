@@ -33,6 +33,7 @@ const deleteCard = async (req, res) => {
     if (err.name === 'ServerError') {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
     }
+  }
 };
 
 const likeCard = async (req, res) => {
