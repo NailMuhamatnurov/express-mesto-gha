@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/notFoundError');
+const { ERROR_CODE_BAD_REQUEST, ERROR_CODE_NOT_FOUND, ERROR_CODE_SERVER_ERROR } = require('../errors/errorsStatus');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -23,7 +24,13 @@ const deleteCard = async (req, res) => {
     }
     res.send({ data: findedCard });
   } catch (err) {
-    res.send(`Ошибка ${err.name}`);
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'CastError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
   }
 };
 
@@ -36,7 +43,13 @@ const likeCard = async (req, res) => {
     }
     res.send({ data: findedLike });
   } catch (err) {
-    res.send(`Ошибка ${err.name}`);
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'CastError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
   }
 };
 
@@ -49,7 +62,13 @@ const dislikeCard = (req, res) => {
     }
     res.send({ data: findedLike });
   } catch (err) {
-    res.send(`Ошибка ${err.name}`);
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'CastError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
   }
 };
 
