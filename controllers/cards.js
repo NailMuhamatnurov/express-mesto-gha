@@ -27,7 +27,7 @@ const deleteCard = async (req, res) => {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
     } else if (err.name === 'NotFoundError') {
-      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Некоректные данные' });
     } else if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
     } else {
@@ -48,7 +48,7 @@ const likeCard = async (req, res) => {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
     } else if (err.name === 'NotFoundError') {
-      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Некоректные данные' });
     } else if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
     } else {
