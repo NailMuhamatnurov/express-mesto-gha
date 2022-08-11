@@ -26,12 +26,13 @@ const deleteCard = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
+    }
+    if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    } else {
+    }
+    if (err.name === 'ServerError') {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
     }
-  }
 };
 
 const likeCard = async (req, res) => {
@@ -41,13 +42,15 @@ const likeCard = async (req, res) => {
     if (!findedLike) {
       throw new NotFoundError('Карточка не найдена');
     }
-    res.send({ data: findedLike });
+    res.status(200).send({ data: findedLike });
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
+    }
+    if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    } else {
+    }
+    if (err.name === 'ServerError') {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
     }
   }
@@ -64,9 +67,11 @@ const dislikeCard = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'ValidationError') {
+    }
+    if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    } else {
+    }
+    if (err.name === 'ServerError') {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
     }
   }
