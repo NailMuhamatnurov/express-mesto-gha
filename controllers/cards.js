@@ -46,10 +46,10 @@ const likeCard = async (req, res) => {
     res.status(200).send({ data: findedLike });
   } catch (err) {
     if (err instanceof NotFoundError) {
-      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: err.message });
     }
     if (err.name === 'NotFoundError') {
-      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Некоректные данные' });
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
     }
     if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
@@ -58,7 +58,7 @@ const likeCard = async (req, res) => {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Сервер не отвечает' });
     }
     if (err.name === 'NotFoundError') {
-      res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Сервер не отвечает' });
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Сервер не отвечает' });
     }
   }
 };
