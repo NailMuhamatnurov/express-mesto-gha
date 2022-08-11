@@ -16,16 +16,28 @@ const getCard = (req, res, next) => {
     .catch(next);
 };
 
-const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send({ data: card }))
-    .catch(next);
+const deleteCard = async (req, res) => {
+  try {
+    const findedCard = await Card.findByIdAndRemove(req.params.cardId);
+    if (!findedCard) {
+      throw new NotFoundError('Карточка не найдена');
+    }
+    res.send({ data: findedCard });
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'ValidationError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
+  }
 };
 
 const likeCard = async (req, res) => {
   try {
     // eslint-disable-next-line max-len
-    const findedLike = Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true });
+    const findedLike = await Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true });
     if (!findedLike) {
       throw new NotFoundError('Карточка не найдена');
     }
@@ -41,10 +53,10 @@ const likeCard = async (req, res) => {
   }
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = async (req, res) => {
   try {
     // eslint-disable-next-line max-len
-    const findedLike = Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true });
+    const findedLike = await Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true });
     if (!findedLike) {
       throw new NotFoundError('Карточка не найдена');
     }

@@ -33,28 +33,42 @@ const getUserById = async (req, res) => {
   }
 };
 
-const updateUser = (req, res, next) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      }
-      res.send({ data: user });
-    })
-    .catch(next);
+const updateUser = async (req, res) => {
+  try {
+    const { name, about } = req.body;
+    const findedUser = await User.findByIdAndUpdate(req.user._id, { name, about }, { new: true });
+    if (!findedUser) {
+      throw new NotFoundError('Пользователь не найден');
+    }
+    res.send({ data: findedUser });
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'ValidationError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
+  }
 };
 
-const updateAvatar = (req, res, next) => {
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      }
-      res.send({ data: user });
-    })
-    .catch(next);
+const updateAvatar = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+    const findedAvatar = await User.findByIdAndUpdate(req.user._id, { avatar }, { new: true });
+    if (!findedAvatar) {
+      throw new NotFoundError('Пользователь не найден');
+    }
+    res.send({ data: findedAvatar });
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
+    } else if (err.name === 'ValidationError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
+    } else {
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
+  }
 };
 
 module.exports = {
