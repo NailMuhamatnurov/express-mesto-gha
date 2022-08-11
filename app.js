@@ -27,7 +27,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cardRouter, userRouter);
+app.use('/cards', cardRouter);
+app.use('/users', userRouter);
 
 app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
