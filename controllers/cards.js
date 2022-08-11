@@ -47,12 +47,18 @@ const likeCard = async (req, res) => {
   } catch (err) {
     if (err instanceof NotFoundError) {
       res.status(ERROR_CODE_NOT_FOUND).send({ message: err.message });
-    } else if (err.name === 'NotFoundError') {
+    }
+    if (err.name === 'NotFoundError') {
       res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Некоректные данные' });
-    } else if (err.name === 'ValidationError') {
+    }
+    if (err.name === 'ValidationError') {
       res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Некоректные данные' });
-    } else {
-      res.status(ERROR_CODE_SERVER_ERROR).send({ message: 'Сервер не отвечает' });
+    }
+    if (err.name === 'CastError') {
+      res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Сервер не отвечает' });
+    }
+    if (err.name === 'NotFoundError') {
+      res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Сервер не отвечает' });
     }
   }
 };
