@@ -2,10 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-
 const router = require('./routes/index');
-
-const { ERROR_CODE_SERVER_ERROR } = require('./errors/errorsStatus');
+const handleErrors = require('./middlewares/errorHandler');
 
 const { PORT = 3000 } = process.env;
 
@@ -24,16 +22,7 @@ app.use(router);
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = ERROR_CODE_SERVER_ERROR, message } = err;
-  res.status(statusCode)
-    .send({
-      message: statusCode === ERROR_CODE_SERVER_ERROR
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(handleErrors);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
