@@ -6,14 +6,14 @@ const AuthError = require('../errors/authError');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'имя пользователя не может быть короче двух символов'],
+    maxlength: [30, 'имя пользователя не может быть длиннее 30 символов'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'информация о пользователе не может быть короче двух символов'],
+    maxlength: [30, 'информация о пользователе не может быть длиннее 30 символов'],
     default: 'Исследователь',
   },
   avatar: {
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
+    minlength: [4, 'пароль не может быть короче четырех символов'],
     select: false,
   },
 });
