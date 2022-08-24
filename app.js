@@ -5,7 +5,7 @@ const { errors } = require('celebrate');
 
 const router = require('./routes/index');
 
-const { ERROR_CODE_BAD_REQUEST, ERROR_CODE_SERVER_ERROR } = require('./errors/errorsStatus');
+const { ERROR_CODE_SERVER_ERROR } = require('./errors/errorsStatus');
 
 const { PORT = 3000 } = process.env;
 
@@ -25,17 +25,13 @@ app.use(router);
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  if (err.name === 'CastError') {
-    res.status(ERROR_CODE_BAD_REQUEST)
-      .send({ message: 'Переданы некорректные данные' });
-  } else if (err.name === 'ValidationError') {
-    res.status(ERROR_CODE_BAD_REQUEST)
-      .send({ message: `${Object.values(err.errors).map((error) => error.message).join(', ')}` });
-  } else {
-    const { statusCode = ERROR_CODE_SERVER_ERROR, message } = err;
-    res.status(statusCode)
-      .send({ message: statusCode === ERROR_CODE_SERVER_ERROR ? 'На сервере произошла ошибка' : message });
-  }
+  const { statusCode = ERROR_CODE_SERVER_ERROR, message } = err;
+  res.status(statusCode)
+    .send({
+      message: statusCode === ERROR_CODE_SERVER_ERROR
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
   next();
 });
 
