@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const router = require('./routes/index');
+
 const handleErrors = require('./middlewares/errorHandler');
 
 const { PORT = 3000 } = process.env;
