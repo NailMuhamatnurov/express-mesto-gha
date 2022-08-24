@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
-/*
+
 userSchema.statics.findUserByCredentials = function getUserIfAuth(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
@@ -62,5 +62,5 @@ userSchema.methods.toJSON = function noShowPassword() {
   delete obj.password;
   return obj;
 };
-*/
+
 module.exports = mongoose.model('user', userSchema);
