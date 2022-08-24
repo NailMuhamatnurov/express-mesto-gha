@@ -3,12 +3,14 @@ const AuthError = require('../errors/authError');
 
 // eslint-disable-next-line consistent-return
 const auth = (req, res, next) => {
-  const { authorization } = req.headers;
+  const { cookies } = req;
+  const authorization = cookies.token;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!authorization) {
     return next(new AuthError('Токен остутствует или некорректен'));
   }
-  const token = authorization.replace('Bearer ', '');
+
+  const token = authorization;
 
   let payload;
   try {

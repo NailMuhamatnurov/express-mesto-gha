@@ -51,7 +51,7 @@ const createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
       }
-      if (err.name === 'MongoError' && err.code === 11000) {
+      if (err.name === 'MongoError' || err.code === 11000) {
         next(new UserExistError('Пользователь с таким email уже существует'));
       }
       next(err);
@@ -75,11 +75,12 @@ const login = (req, res, next) => {
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.cookie('token', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      })
-        .end();
+      res
+        .cookie('token', token, {
+          maxAge: 604800000,
+          httpOnly: true,
+        })
+        .send({ token });
     })
     .catch(next);
 };
