@@ -16,10 +16,10 @@ const getUsers = (req, res, next) => {
           _id,
         } = user;
         return {
-          _id,
           name,
           about,
           avatar,
+          _id,
         };
       }));
     })

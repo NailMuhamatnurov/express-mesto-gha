@@ -17,6 +17,7 @@ const checkedEmail = Joi.string()
   });
 
 const checkedLink = Joi.string()
+  .required()
   .custom((value, helpers) => {
     if (validator.isURL(value)) return value;
     return helpers.message('Неверный формат ссылки на изображение');
@@ -31,7 +32,7 @@ const validateAuth = celebrate({
 const validateCreateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: checkedLink,
   }),
 });
 
@@ -66,7 +67,7 @@ const validateSignup = celebrate({
     password: Joi.string().required().min(4),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: checkedLink,
+    avatar: Joi.string(),
   }),
 });
 
