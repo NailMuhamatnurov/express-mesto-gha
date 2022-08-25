@@ -67,7 +67,11 @@ const validateSignup = celebrate({
     password: Joi.string().required().min(4),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: checkedLink,
+    avatar: Joi.string()
+      .custom((value, helpers) => {
+        if (validator.isURL(value)) return value;
+        return helpers.message('Неверный формат ссылки на изображение');
+      }),
   }),
 });
 

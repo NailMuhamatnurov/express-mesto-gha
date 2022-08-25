@@ -5,6 +5,15 @@ const NotFoundError = require('../errors/notFoundError');
 const ValidationError = require('../errors/validationError');
 const UserExistError = require('../errors/userExistError');
 
+const deleteEmptyField = (obj) => {
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] === undefined) {
+      // eslint-disable-next-line no-param-reassign
+      delete obj[key];
+    }
+  });
+};
+
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
@@ -16,10 +25,10 @@ const getUsers = (req, res, next) => {
           _id,
         } = user;
         return {
+          _id,
           name,
           about,
           avatar,
-          _id,
         };
       }));
     })
@@ -46,7 +55,7 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send({ data: user })) // user.toJSON()
+    .then((user) => res.send(user.toJSON()))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
@@ -86,6 +95,7 @@ const login = (req, res, next) => {
 };
 
 const updateUser = (req, res, next) => {
+  deleteEmptyField(req.body);
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -108,6 +118,7 @@ const updateUser = (req, res, next) => {
 };
 
 const updateAvatar = (req, res, next) => {
+  deleteEmptyField(req.body);
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
