@@ -14,7 +14,10 @@
     "url": "git+https://github.com/NailMuhamatnurov/express-mesto-gha.git"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+	"name": "Nail Muhamatnurov",
+	"email": "nailmuhamatnurov@yandex.ru"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/NailMuhamatnurov/express-mesto-gha/issues"

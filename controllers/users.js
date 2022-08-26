@@ -5,15 +5,6 @@ const NotFoundError = require('../errors/notFoundError');
 const ValidationError = require('../errors/validationError');
 const UserExistError = require('../errors/userExistError');
 
-const deleteEmptyField = (obj) => {
-  Object.keys(obj).forEach((key) => {
-    if (obj[key] === undefined) {
-      // eslint-disable-next-line no-param-reassign
-      delete obj[key];
-    }
-  });
-};
-
 const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send(user))
@@ -44,21 +35,24 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-      }
-      if (err.name === 'MongoError' || err.code === 11000) {
+      } else if (err.name === 'MongoError' || err.code === 11000) {
         next(new UserExistError('Пользователь с таким email уже существует'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с указанным _id не найдена');
+    })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные id пользователя'));
+        return;
       }
       next(err);
     });
@@ -80,7 +74,6 @@ const login = (req, res, next) => {
 };
 
 const updateUser = (req, res, next) => {
-  deleteEmptyField(req.body);
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -90,20 +83,22 @@ const updateUser = (req, res, next) => {
       runValidators: true,
     },
   )
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с указанным _id не найдена');
+    })
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        return;
       }
       next(err);
     });
 };
 
 const updateAvatar = (req, res, next) => {
-  deleteEmptyField(req.body);
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -113,11 +108,14 @@ const updateAvatar = (req, res, next) => {
       runValidators: true,
     },
   )
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с указанным _id не найдена');
+    })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+        return;
       }
       next(err);
     });
@@ -125,7 +123,9 @@ const updateAvatar = (req, res, next) => {
 
 const currentUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(new NotFoundError('Пользователь по указанному _id не найден'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с указанным _id не найдена');
+    })
     .then((user) => res.send(user))
     .catch(next);
 };
