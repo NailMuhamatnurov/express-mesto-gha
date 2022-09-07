@@ -1,6 +1,7 @@
 const CORS_WHITELIST = ['http://localhost:3001',
   'http://nailm.mesto.students.nomoredomains.sbs',
-  'https://nailm.mesto.students.nomoredomains.sbs'];
+  'https://nailm.mesto.students.nomoredomains.sbs',
+];
 
 const corsOption = {
   credentials: true,
