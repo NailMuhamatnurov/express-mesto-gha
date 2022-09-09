@@ -18,7 +18,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
-    next(new AuthError('Токен не верифицирован, авторизация не пройдена'));
+    return next(new AuthError('Токен не верифицирован, авторизация не пройдена'));
   }
 
   req.user = payload;

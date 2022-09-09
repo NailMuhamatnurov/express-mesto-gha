@@ -35,6 +35,8 @@ const deleteCard = (req, res, next) => {
         throw new NoRightsError('Недостаточно прав для удаления');
       }
       card.remove();
+    })
+    .then(() => {
       res.send({ message: 'Пост удален' });
     })
     .catch((err) => {

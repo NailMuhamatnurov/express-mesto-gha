@@ -21,10 +21,10 @@ const createUser = (req, res, next) => {
     email,
     password,
   } = req.body;
-
+  /*
   if (!password || password.length < 4) {
     throw new ValidationError('Пароль отсутствует или короче четырех символов');
-  }
+  } */
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name,
